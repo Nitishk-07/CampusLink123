@@ -1,0 +1,11 @@
+# ── Secrets — never commit these ──────────────────────────────────────────────
+firebase-config.js
+
+# ── OS / editor junk ──────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ── Node (if you ever add a build step) ──────────────────────────────────────
+node_modules/
