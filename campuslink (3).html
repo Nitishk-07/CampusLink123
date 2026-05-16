@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CampusLink — Connect With Your Campus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#080810;--card:rgba(255,255,255,.055);--card2:rgba(255,255,255,.085);
+  --border:rgba(255,255,255,.095);--border2:rgba(255,255,255,.19);
+  --t1:#f4f4ff;--t2:rgba(244,244,255,.68);--t3:rgba(244,244,255,.42);
+  --a1:#6366f1;--a2:#8b5cf6;--a3:#06b6d4;
+  --glow:0 0 28px rgba(99,102,241,.34),0 0 80px rgba(139,92,246,.14);
+  --shadow:0 30px 80px rgba(0,0,0,.45);
+  --r3:26px;--r4:34px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 18% 16%,rgba(99,102,241,.22),transparent 34%),
+    radial-gradient(circle at 82% 18%,rgba(139,92,246,.18),transparent 30%),
+    radial-gradient(circle at 52% 88%,rgba(6,182,212,.12),transparent 31%),
+    var(--bg);
+  color:var(--t1);font-family:'DM Sans',system-ui,sans-serif;overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;opacity:.28;
+  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(circle at center,black,transparent 78%);z-index:-1;
+}
+button,input{font:inherit}button{cursor:pointer;border:none}
+h1,h2,h3,.display{font-family:'Syne',system-ui,sans-serif}
+.hidden{display:none!important}
+.wrap{width:min(1180px,calc(100% - 32px));margin:0 auto}
+.glass{background:var(--card);border:1px solid var(--border);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+.gtext{background:linear-gradient(135deg,#a5b4fc 0%,#c084fc 48%,#67e8f9 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.muted{color:var(--t3)}.dim{color:var(--t2)}
+
+.blob{position:fixed;border-radius:999px;filter:blur(8px);opacity:.15;pointer-events:none;z-index:-1;animation:blobf 9s infinite ease-in-out}
+.b1{width:520px;height:520px;left:-180px;top:-140px;background:#6366f1}
+.b2{width:460px;height:460px;right:-160px;top:80px;background:#8b5cf6;animation-delay:2s}
+.b3{width:380px;height:380px;left:24%;bottom:-160px;background:#06b6d4;animation-delay:4s}
+@keyframes blobf{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(32px,-40px) scale(1.08)}66%{transform:translate(-24px,22px) scale(.94)}}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.rise{animation:rise .6s ease both}
+@keyframes bounce{from{transform:translateY(0);opacity:.5}to{transform:translateY(-12px);opacity:1}}
+
+.topbar{position:sticky;top:0;z-index:50;width:100%;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(8,8,16,.74);backdrop-filter:blur(18px)}
+.nav-inner{height:76px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:22px;background:none;color:var(--t1);padding:0}
+.brand-icon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--a1),var(--a2));box-shadow:var(--glow);font-size:20px}
+.nav-links{display:flex;align-items:center;gap:6px}
+.nav-btn{padding:9px 13px;border-radius:999px;color:var(--t2);background:transparent;font-size:14px;transition:.18s ease}
+.nav-btn:hover,.nav-btn.active{color:white;background:rgba(255,255,255,.07)}
+.avatar{width:38px;height:38px;border-radius:999px;object-fit:cover;border:1px solid rgba(255,255,255,.2)}
+.logout-btn{padding:9px 13px;border-radius:999px;color:#fecdd3;background:rgba(251,113,133,.1);border:1px solid rgba(251,113,133,.22);font-size:14px;transition:.18s ease}
+.logout-btn:hover{background:rgba(251,113,133,.2)}
+
+.pbtn{width:100%;padding:15px 18px;border-radius:18px;color:white;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,var(--a1),var(--a2));box-shadow:var(--glow);transition:transform .18s,filter .18s;font-size:16px}
+.pbtn:hover{transform:translateY(-2px);filter:brightness(1.09)}
+.pbtn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.pbtn.sm{width:auto;padding-inline:26px}
+.sbtn{padding:13px 20px;border-radius:16px;color:white;font-weight:600;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.11);transition:.18s ease;display:inline-flex;align-items:center;gap:8px}
+.sbtn:hover{background:rgba(255,255,255,.14);transform:translateY(-1px)}
+.gh-btn{width:100%;padding:15px 18px;border-radius:18px;color:white;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:12px;background:#24292e;border:1px solid rgba(255,255,255,.15);font-size:16px;transition:transform .18s,filter .18s;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.gh-btn:hover{transform:translateY(-2px);filter:brightness(1.14)}
+
+.field{margin-bottom:18px}
+.lbl{display:block;margin-bottom:8px;color:var(--t2);font-size:14px}
+.inp{width:100%;padding:14px 16px;border-radius:16px;color:white;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.11);outline:none;transition:.18s ease}
+.inp:focus{border-color:rgba(99,102,241,.55);box-shadow:0 0 0 4px rgba(99,102,241,.13);background:rgba(255,255,255,.075)}
+.inp::placeholder{color:var(--t3)}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;z-index:1000;padding:13px 18px;border-radius:16px;color:white;background:rgba(15,23,42,.9);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(14px);transition:.22s ease;box-shadow:var(--shadow);white-space:nowrap;font-size:15px}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{border-color:rgba(251,113,133,.4)}
+.toast.ok{border-color:rgba(52,211,153,.4)}
+
+.loader{min-height:100vh;display:grid;place-items:center}
+.dots{display:flex;gap:8px}
+.dot{width:12px;height:12px;border-radius:999px;background:var(--a1);animation:bounce .75s infinite alternate}
+.dot:nth-child(2){animation-delay:.13s}.dot:nth-child(3){animation-delay:.26s}
+
+.login-wrap{min-height:100vh;display:grid;place-items:center;padding:46px 0}
+.login-grid{display:grid;grid-template-columns:1.1fr .85fr;gap:70px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;padding:8px 13px;border-radius:999px;color:var(--t2);font-size:14px;margin-bottom:24px}
+.hero-title{font-size:clamp(48px,8vw,86px);line-height:.98;letter-spacing:-.07em;margin-bottom:26px}
+.hero-copy{font-size:18px;line-height:1.7;color:var(--t2);margin-bottom:30px}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{padding:9px 14px;border-radius:999px;color:var(--t2);font-size:14px}
+.login-card{border-radius:var(--r4);padding:34px;box-shadow:var(--shadow)}
+.divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--t3);font-size:13px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}
+.stat{text-align:center;padding:14px 8px;border-radius:18px}
+.stat b{display:block;font-size:18px;font-weight:800}
+.stat span{font-size:12px;color:var(--t3)}
+.small-note{margin-top:14px;color:var(--t3);font-size:13px;line-height:1.6}
+.auth-tabs{display:flex;gap:6px;background:rgba(255,255,255,.06);border-radius:14px;padding:5px;margin-bottom:24px}
+.auth-tab{flex:1;padding:10px;border-radius:10px;font-size:15px;font-weight:600;color:var(--t2);background:transparent;transition:.18s ease}
+.auth-tab.active{background:rgba(255,255,255,.13);color:white;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.auth-tab:hover:not(.active){color:white;background:rgba(255,255,255,.07)}
+.next-steps{display:grid;gap:10px;margin:4px 0}
+.next-step{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--t2)}
+.step-num{width:26px;height:26px;border-radius:999px;background:linear-gradient(135deg,var(--a1),var(--a2));display:grid;place-items:center;font-size:12px;font-weight:800;color:white;flex-shrink:0}
+.gh-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);color:var(--t2);text-decoration:none;transition:.15s ease;margin-top:8px;width:fit-content}
+.gh-badge:hover{color:white;background:rgba(255,255,255,.12)}
+
+.setup-wrap{min-height:100vh;display:grid;place-items:center;padding:46px 0}
+.setup-card{max-width:740px;width:100%;padding:36px;border-radius:var(--r4);box-shadow:var(--shadow)}
+.steps-bar{display:flex;gap:10px;margin:22px 0 30px}
+.step-pill{height:8px;flex:1;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+.step-pill.on::before{content:'';display:block;height:100%;background:linear-gradient(90deg,var(--a1),var(--a3))}
+.setup-actions{display:flex;gap:12px;justify-content:space-between;margin-top:28px}
+
+.col-results{margin-top:10px;max-height:300px;overflow-y:auto;border-radius:18px}
+.col-row{width:100%;padding:13px 15px;display:flex;align-items:center;gap:13px;color:white;text-align:left;background:transparent;border-bottom:1px solid rgba(255,255,255,.07);transition:.15s ease}
+.col-row:hover{background:rgba(255,255,255,.06)}
+.col-logo{object-fit:contain;background:white;padding:6px;flex-shrink:0}
+.col-fb{display:grid;place-items:center;color:white;font-weight:800;background:linear-gradient(135deg,rgba(99,102,241,.45),rgba(6,182,212,.22));border:1px solid rgba(255,255,255,.12);flex-shrink:0}
+.sel-college{display:flex;align-items:center;gap:14px;padding:15px;border-radius:18px;margin:12px 0;background:rgba(99,102,241,.09);border:1px solid rgba(99,102,241,.22)}
+
+.interests{display:flex;flex-wrap:wrap;gap:8px}
+.int-btn{padding:8px 13px;border-radius:999px;color:var(--t2);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);font-size:14px;transition:.15s ease}
+.int-btn.on{color:white;background:rgba(99,102,241,.7);border-color:rgba(255,255,255,.18)}
+
+.dash{padding:30px 0 80px}
+.dash-hero{border-radius:var(--r4);padding:32px;box-shadow:var(--shadow);overflow:hidden;position:relative}
+.dash-hero::after{content:'';position:absolute;right:-120px;top:-120px;width:360px;height:360px;background:radial-gradient(circle,rgba(99,102,241,.2),transparent 68%);pointer-events:none}
+.profile-head{display:flex;align-items:center;gap:22px;position:relative;z-index:1}
+.profile-name{font-size:clamp(34px,6vw,60px);line-height:1;letter-spacing:-.06em}
+.dash-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:18px;margin-top:18px}
+.panel{border-radius:var(--r3);padding:24px}
+.panel h2{font-size:22px;margin-bottom:12px;letter-spacing:-.03em}
+.summary{color:var(--t2);line-height:1.75;font-size:15px}
+.meta-list{margin-top:10px}
+.meta-row{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.meta-row:last-child{border-bottom:none}
+.meta-row span:first-child{color:var(--t3)}
+.badge-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.badge{font-size:12px;padding:6px 10px;border-radius:999px;color:#dbeafe;background:rgba(99,102,241,.18);border:1px solid rgba(99,102,241,.22)}
+
+.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.s-card{border-radius:var(--r3);padding:20px;transition:.18s ease}
+.s-card:hover{transform:translateY(-3px);background:var(--card2);border-color:var(--border2)}
+.s-top{display:flex;gap:12px;align-items:center;margin-bottom:13px}
+.toolbar{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap}
+.toolbar .inp{max-width:320px}
+.empty{text-align:center;padding:54px 24px;border-radius:var(--r4);color:var(--t2)}
+.empty h2{color:white;margin-bottom:8px}
+.av-fb{border-radius:999px;display:grid;place-items:center;font-weight:800;color:white;background:linear-gradient(135deg,rgba(99,102,241,.5),rgba(139,92,246,.3));flex-shrink:0}
+
+@media(max-width:960px){.login-grid,.dash-grid{grid-template-columns:1fr;gap:22px}.cards-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.wrap{width:calc(100% - 22px)}.login-card,.setup-card,.dash-hero,.panel{padding:20px;border-radius:22px}.grid2,.cards-grid{grid-template-columns:1fr}.profile-head{flex-direction:column;align-items:flex-start}.toolbar{flex-direction:column;align-items:stretch}.toolbar .inp{max-width:none}}
+</style>
+</head>
+<body>
+<div class="blob b1"></div>
+<div class="blob b2"></div>
+<div class="blob b3"></div>
+<main id="app"></main>
+<div id="toast" class="toast"></div>
+
+<script type="module">
+import { initializeApp }     from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+                              from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs }
+                              from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+
+/* ── Firebase config ── */
+const firebaseConfig = {
+  apiKey:            "AIzaSyCxyiAt4FGGwAvq6LoOW6mqimMfV078e-8",
+  authDomain:        "campus-link-54a2d.firebaseapp.com",
+  projectId:         "campus-link-54a2d",
+  storageBucket:     "campus-link-54a2d.firebasestorage.app",
+  messagingSenderId: "556068695124",
+  appId:             "1:556068695124:web:dd9dfaab19ad30097911c1",
+  measurementId:     "G-KJC7G087NW"
+};
+
+/* ── Optional extras ─────────────────────────────────────────────────────────
+   SCORECARD_KEY  → free at api.data.gov  — enables full US college search
+   LOGO_DEV_TOKEN → free at logo.dev      — shows real college logos
+   Leave either blank and the built-in fallback kicks in automatically.
+   ─────────────────────────────────────────────────────────────────────────── */
+const SCORECARD_KEY  = '';
+const LOGO_DEV_TOKEN = '';
+
+/* ── REMAINING ONE-TIME SETUP (do this in Firebase Console) ─────────────────
+
+   1. ENABLE GITHUB AUTH
+      Firebase Console → Authentication → Sign-in method → GitHub → Enable
+      → copy the OAuth callback URL shown there
+
+   2. CREATE A GITHUB OAUTH APP
+      github.com → Settings → Developer settings → OAuth Apps → New OAuth App
+        Homepage URL          : http://127.0.0.1:5500   (Phoenix Code Live Server)
+        Authorization callback: paste the Firebase callback URL from step 1
+      → Register → copy Client ID + generate Client Secret
+      → paste both back into Firebase Console → Auth → GitHub → Save
+
+   3. ADD AUTHORIZED DOMAINS
+      Firebase Console → Authentication → Settings → Authorized domains
+      → Add:  localhost   and   127.0.0.1
+
+   4. CREATE FIRESTORE DATABASE
+      Firebase Console → Firestore Database → Create database → Production mode
+      → Firestore → Rules tab → replace everything with:
+
+      rules_version = '2';
+      service cloud.firestore {
+        match /databases/{database}/documents {
+          match /users/{uid} {
+            allow read:   if request.auth != null
+                          && resource.data.onboardingComplete == true;
+            allow create: if request.auth != null && request.auth.uid == uid;
+            allow update,
+                  delete: if request.auth != null && request.auth.uid == uid;
+          }
+        }
+      }
+
+   5. OPEN IN PHOENIX CODE
+      File → Open Folder → select the folder containing this file
+      Click the Live Preview / Live Server button
+      The app opens at http://127.0.0.1:5500
+
+   6. DEPLOY TO GITHUB PAGES
+      - Push this file (and nothing else needed) to a GitHub repo
+      - Repo → Settings → Pages → Source: main branch / root
+      - Your app is live at https://YOUR-USERNAME.github.io/YOUR-REPO/
+      - Add that URL to Firebase → Auth → Authorized domains too
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── Built-in college list (used when SCORECARD_KEY is empty) ── */
+const BUILTIN = [
+  {id:'110635',name:'Harvard University',city:'Cambridge',state:'MA',website:'harvard.edu',ownership:'Private nonprofit',studentSize:21000},
+  {id:'166027',name:'MIT',city:'Cambridge',state:'MA',website:'mit.edu',ownership:'Private nonprofit',studentSize:11500},
+  {id:'130794',name:'Yale University',city:'New Haven',state:'CT',website:'yale.edu',ownership:'Private nonprofit',studentSize:12060},
+  {id:'215062',name:'University of Pennsylvania',city:'Philadelphia',state:'PA',website:'upenn.edu',ownership:'Private nonprofit',studentSize:21000},
+  {id:'243744',name:'Stanford University',city:'Stanford',state:'CA',website:'stanford.edu',ownership:'Private nonprofit',studentSize:17000},
+  {id:'166683',name:'Northeastern University',city:'Boston',state:'MA',website:'northeastern.edu',ownership:'Private nonprofit',studentSize:20000},
+  {id:'168148',name:'Boston University',city:'Boston',state:'MA',website:'bu.edu',ownership:'Private nonprofit',studentSize:34000},
+  {id:'164988',name:'University of Michigan',city:'Ann Arbor',state:'MI',website:'umich.edu',ownership:'Public',studentSize:47000},
+  {id:'110662',name:'UCLA',city:'Los Angeles',state:'CA',website:'ucla.edu',ownership:'Public',studentSize:46000},
+  {id:'110671',name:'UC Berkeley',city:'Berkeley',state:'CA',website:'berkeley.edu',ownership:'Public',studentSize:45000},
+  {id:'126614',name:'University of Colorado Boulder',city:'Boulder',state:'CO',website:'colorado.edu',ownership:'Public',studentSize:38000},
+  {id:'228778',name:'UT Austin',city:'Austin',state:'TX',website:'utexas.edu',ownership:'Public',studentSize:51000},
+  {id:'199120',name:'Duke University',city:'Durham',state:'NC',website:'duke.edu',ownership:'Private nonprofit',studentSize:17000},
+  {id:'144050',name:'University of Chicago',city:'Chicago',state:'IL',website:'uchicago.edu',ownership:'Private nonprofit',studentSize:17000},
+  {id:'147767',name:'Purdue University',city:'West Lafayette',state:'IN',website:'purdue.edu',ownership:'Public',studentSize:50000},
+  {id:'186131',name:'Princeton University',city:'Princeton',state:'NJ',website:'princeton.edu',ownership:'Private nonprofit',studentSize:8000},
+  {id:'139959',name:'Georgia Tech',city:'Atlanta',state:'GA',website:'gatech.edu',ownership:'Public',studentSize:26000},
+  {id:'170976',name:'University of Minnesota',city:'Minneapolis',state:'MN',website:'umn.edu',ownership:'Public',studentSize:51000},
+  {id:'190150',name:'New York University',city:'New York',state:'NY',website:'nyu.edu',ownership:'Private nonprofit',studentSize:51000},
+  {id:'217156',name:'Brown University',city:'Providence',state:'RI',website:'brown.edu',ownership:'Private nonprofit',studentSize:10000},
+  {id:'192439',name:'Columbia University',city:'New York',state:'NY',website:'columbia.edu',ownership:'Private nonprofit',studentSize:31000},
+  {id:'204796',name:'Ohio State University',city:'Columbus',state:'OH',website:'osu.edu',ownership:'Public',studentSize:61000},
+  {id:'163286',name:'University of Maryland',city:'College Park',state:'MD',website:'umd.edu',ownership:'Public',studentSize:41000},
+  {id:'236948',name:'University of Washington',city:'Seattle',state:'WA',website:'uw.edu',ownership:'Public',studentSize:48000},
+  {id:'100751',name:'University of Alabama',city:'Tuscaloosa',state:'AL',website:'ua.edu',ownership:'Public',studentSize:38000},
+  {id:'179867',name:'University of Missouri',city:'Columbia',state:'MO',website:'missouri.edu',ownership:'Public',studentSize:30000},
+  {id:'174066',name:'Michigan State University',city:'East Lansing',state:'MI',website:'msu.edu',ownership:'Public',studentSize:50000},
+  {id:'145637',name:'University of Illinois Urbana-Champaign',city:'Champaign',state:'IL',website:'illinois.edu',ownership:'Public',studentSize:56000},
+  {id:'153658',name:'Indiana University Bloomington',city:'Bloomington',state:'IN',website:'indiana.edu',ownership:'Public',studentSize:43000},
+  {id:'240444',name:'University of Wisconsin-Madison',city:'Madison',state:'WI',website:'wisc.edu',ownership:'Public',studentSize:48000},
+];
+
+const OWNERSHIP_MAP = {1:'Public',2:'Private nonprofit',3:'Private for-profit'};
+const INTERESTS = [
+  'Machine Learning','Web Development','Mobile Apps','Open Source',
+  'Entrepreneurship','Design','Research','Data Science',
+  'Robotics','Cybersecurity','Cloud Computing','Blockchain',
+  'Photography','Music','Film Making','Writing',
+  'Sustainability','Social Impact','Finance','Marketing',
+  'Pre-Med','Biotech','Psychology','Philosophy',
+  'Gaming','AR/VR','Space Tech','Community Building',
+  'Teaching','Public Policy','Law','Sports & Fitness',
+];
+
+/* ── Init Firebase ── */
+const fbApp      = initializeApp(firebaseConfig);
+const auth       = getAuth(fbApp);
+const db         = getFirestore(fbApp);
+const googleProvider = new GoogleAuthProvider();
+
+/* ── App state ── */
+const S = {
+  user:null, profile:null, route:'loading',
+  step:0, od:{preferredName:'',college:null,major:'',gradYear:'',interests:[]},
+  colResults:[], colLoading:false, colTimer:null,
+  community:[], commFilter:'',
+};
+
+/* ── Helpers ── */
+const $     = id => document.getElementById(id);
+const app   = document.getElementById('app');
+const esc   = v  => String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const inits = n  => (n||'').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]?.toUpperCase()||'').join('')||'CL';
+const normD = u  => (u||'').toLowerCase().replace(/^https?:\/\//,'').replace(/^www\./,'').split('/')[0];
+const logoUrl = d => (d && LOGO_DEV_TOKEN) ? `https://img.logo.dev/${encodeURIComponent(d)}?token=${encodeURIComponent(LOGO_DEV_TOKEN)}` : '';
+
+function toast(msg, type='') {
+  const el=$('toast');
+  el.textContent=msg; el.className=`toast show ${type}`;
+  clearTimeout(el._t); el._t=setTimeout(()=>el.className='toast',3200);
+}
+
+const loaderHtml = () =>
+  `<div class="loader"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+
+function renderLogo(name, logo, size=46) {
+  const r=Math.round(size*.3), fs=Math.round(size*.32);
+  if (logo) return `<img src="${esc(logo)}" class="col-logo" style="width:${size}px;height:${size}px;border-radius:${r}px" onerror="this.outerHTML='<div class=col-fb style=width:${size}px;height:${size}px;border-radius:${r}px;font-size:${fs}px>${esc(inits(name))}</div>'">`;
+  return `<div class="col-fb" style="width:${size}px;height:${size}px;border-radius:${r}px;font-size:${fs}px">${esc(inits(name))}</div>`;
+}
+
+function avEl(url, name, size=40) {
+  if (url) return `<img class="avatar" src="${esc(url)}" alt="${esc(name)}" style="width:${size}px;height:${size}px">`;
+  return `<div class="av-fb" style="width:${size}px;height:${size}px;font-size:${Math.round(size*.34)}px">${esc(inits(name))}</div>`;
+}
+
+/* ── AI-style summaries ── */
+function studentSummary(p) {
+  const name=p.preferredName||'This student', major=p.major||'an undecided field';
+  const school=p.collegeName||'their university';
+  const grad=p.gradYear?`Class of ${p.gradYear}`:'an upcoming graduate';
+  const ints=(p.interests||[]).slice(0,4).join(', ')||'learning, growth, and community';
+  return `${name} is a ${major} student at ${school} and a member of the ${grad}. Their interests span ${ints}, making them a standout connection for students looking to build real campus community.`;
+}
+
+function collegeSummary(c) {
+  if (!c) return '';
+  const loc=[c.city,c.state].filter(Boolean).join(', ')||'the United States';
+  const type=c.ownership?` It is a ${c.ownership.toLowerCase()}.`:'';
+  const sz=c.studentSize?` With approximately ${Number(c.studentSize).toLocaleString()} enrolled students, it is a vibrant academic community.`:'';
+  const web=c.website?` Visit at ${c.website}.`:'';
+  return `${c.name} is located in ${loc}.${type}${sz}${web}`;
+}
+
+/* ── College search ── */
+async function searchColleges(term) {
+  const t=term.trim();
+  if (t.length<2) return [];
+  if (SCORECARD_KEY) {
+    try {
+      const p=new URLSearchParams({api_key:SCORECARD_KEY,'school.name':t,per_page:'14',fields:'id,school.name,school.city,school.state,school.school_url,school.ownership,latest.student.size'});
+      const r=await fetch(`https://api.data.gov/ed/collegescorecard/v1/schools?${p}`);
+      if (r.ok) {
+        const d=await r.json();
+        return (d.results||[]).map(item=>{
+          const domain=normD(item['school.school_url']||'');
+          return {id:String(item.id),name:item['school.name']||'Unknown',city:item['school.city']||'',state:item['school.state']||'',website:domain,ownership:OWNERSHIP_MAP[item['school.ownership']]||'',studentSize:item['latest.student.size']||null,logo:logoUrl(domain)};
+        });
+      }
+    } catch {}
+  }
+  const q=t.toLowerCase();
+  return BUILTIN.filter(c=>c.name.toLowerCase().includes(q)||c.city.toLowerCase().includes(q)||c.state.toLowerCase().includes(q)).map(c=>({...c,logo:logoUrl(c.website)}));
+}
+
+/* ── Firestore ── */
+async function getProfile(uid) {
+  try {
+    const snap = await getDoc(doc(db,'users',uid));
+    return snap.exists() ? snap.data() : null;
+  } catch(e) {
+    console.warn('getProfile error:', e.code, e.message);
+    throw e;
+  }
+}
+async function saveProfile(uid,data) {
+  try {
+    await setDoc(doc(db,'users',uid),{...data,updatedAt:Date.now()},{merge:true});
+  } catch(e) {
+    console.error('saveProfile failed:', e.code, e.message);
+    if (e.code === 'permission-denied') {
+      throw new Error('Firestore permission denied — go to Firebase Console → Firestore → Rules and publish the rules from the setup guide.');
+    }
+    throw e;
+  }
+}
+async function getCommunity(collegeId) {
+  const q=query(collection(db,'users'),where('collegeId','==',collegeId),where('onboardingComplete','==',true));
+  const snap=await getDocs(q);
+  return snap.docs.map(d=>d.data()).filter(u=>u.uid!==S.user.uid);
+}
+
+/* ── Navbar ── */
+function navbar() {
+  const p=S.profile, avatar=p?.photoURL||S.user?.photoURL||'', name=p?.preferredName||'';
+  return `
+  <header class="topbar">
+    <div class="wrap nav-inner">
+      <button class="brand" data-r="dashboard"><span class="brand-icon">🎓</span><span class="gtext">CampusLink</span></button>
+      <nav class="nav-links">
+        <button class="nav-btn${S.route==='dashboard'?' active':''}" data-r="dashboard">Dashboard</button>
+        <button class="nav-btn${S.route==='community'?' active':''}" data-r="community">Community</button>
+        <button class="nav-btn${S.route==='edit'?' active':''}" data-r="edit">Edit Profile</button>
+        ${avatar?`<img class="avatar" src="${esc(avatar)}" alt="${esc(name)}">`:''}
+        <button class="logout-btn" id="logoutBtn">Sign out</button>
+      </nav>
+    </div>
+  </header>`;
+}
+
+function attachNav() {
+  document.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.r)));
+  $('logoutBtn')?.addEventListener('click',async()=>{ await signOut(auth); S.user=null; S.profile=null; go('login'); });
+}
+
+/* ── Router ── */
+async function go(route) {
+  S.route=route; S.colResults=[];
+  window.scrollTo(0,0);
+  if      (route==='loading')   app.innerHTML=loaderHtml();
+  else if (route==='login')     renderAuth('signin');
+  else if (route==='setup')     { S.step=0; renderSetup(false); }
+  else if (route==='dashboard') renderDashboard();
+  else if (route==='community') await renderCommunity();
+  else if (route==='edit')      prepEdit();
+}
+
+/* ── Google SVG ── */
+const googleSvg = `<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>`;
+
+/* ── Auth page — sign in vs sign up ── */
+function renderAuth(mode='signin') {
+  const isSignup = mode==='signup';
+  app.innerHTML=`
+  <section class="login-wrap">
+    <div class="wrap login-grid rise">
+      <div>
+        <div class="eyebrow glass">🎓 CampusLink</div>
+        <h1 class="hero-title display">Your campus.<br><span class="gtext">Connected.</span></h1>
+        <p class="hero-copy">Discover students from your college, build your profile, and connect with your campus community — all in one place.</p>
+        <div class="chips">
+          <span class="chip glass">🔵 Google login</span>
+          <span class="chip glass">🎓 Real college search</span>
+          <span class="chip glass">🤝 Campus community</span>
+          <span class="chip glass">✨ AI summaries</span>
+        </div>
+      </div>
+      <div class="login-card glass">
+        <div class="auth-tabs">
+          <button class="auth-tab ${!isSignup?'active':''}" id="toSignin">Sign In</button>
+          <button class="auth-tab ${isSignup?'active':''}" id="toSignup">Sign Up</button>
+        </div>
+        ${isSignup ? `
+          <h2 class="display" style="font-size:26px;letter-spacing:-.04em;margin-bottom:6px">Create your account</h2>
+          <p class="muted" style="margin-bottom:22px;font-size:14px;line-height:1.6">Sign up with Google — your CampusLink profile will be set up right after.</p>
+          <button class="gh-btn" id="authBtn">${googleSvg} Sign up with Google</button>
+          <div class="divider">what happens next</div>
+          <div class="next-steps">
+            <div class="next-step"><span class="step-num">1</span><span>Sign up with your Google account</span></div>
+            <div class="next-step"><span class="step-num">2</span><span>Choose your college, major &amp; interests</span></div>
+            <div class="next-step"><span class="step-num">3</span><span>Discover students from your campus</span></div>
+          </div>
+        ` : `
+          <h2 class="display" style="font-size:26px;letter-spacing:-.04em;margin-bottom:6px">Welcome back.</h2>
+          <p class="muted" style="margin-bottom:22px;font-size:14px;line-height:1.6">Sign in with the same Google account you signed up with — your profile loads instantly.</p>
+          <button class="gh-btn" id="authBtn">${googleSvg} Sign in with Google</button>
+          <div class="divider">returning user</div>
+          <p class="muted" style="font-size:13px;text-align:center;line-height:1.6">Your college, major, and interests are already saved.<br>You'll land straight on your dashboard.</p>
+        `}
+        <div class="stats" style="margin-top:20px">
+          <div class="stat glass"><b>1-click</b><span>login</span></div>
+          <div class="stat glass"><b>Saved</b><span>forever</span></div>
+          <div class="stat glass"><b>Real</b><span>colleges</span></div>
+        </div>
+        <p class="small-note">
+          ${isSignup?'Already have an account?':"Don't have an account?"}
+          <button style="background:none;color:#a5b4fc;font-size:13px;padding:0;text-decoration:underline;cursor:pointer" id="switchMode">
+            ${isSignup?'Sign in instead':'Sign up here'}
+          </button>
+        </p>
+      </div>
+    </div>
+  </section>`;
+
+  $('toSignin').addEventListener('click', ()=>renderAuth('signin'));
+  $('toSignup').addEventListener('click', ()=>renderAuth('signup'));
+  $('switchMode').addEventListener('click', ()=>renderAuth(isSignup?'signin':'signup'));
+
+  $('authBtn').addEventListener('click', async () => {
+    const btn=$('authBtn');
+    btn.disabled=true;
+    btn.innerHTML=`${googleSvg} Opening Google…`;
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      S.user = user;
+      S.od.preferredName = user.displayName||'';
+
+      if (isSignup) {
+        /* ── SIGN UP: always go to profile setup ── */
+        let existing=null;
+        try { existing=await getProfile(user.uid); } catch {}
+        if (existing?.onboardingComplete) {
+          // Already has a full profile — just sign them in
+          S.profile=existing;
+          toast('You already have an account — welcome back! 👋','ok');
+          go('dashboard');
+        } else {
+          S.profile=null;
+          go('setup'); // → build profile form
+        }
+      } else {
+        /* ── SIGN IN: load profile and go to dashboard ── */
+        let p=null;
+        try { p=await getProfile(user.uid); } catch(e) {
+          console.warn('getProfile on sign-in:', e.code);
+        }
+        S.profile=p;
+        if (p?.onboardingComplete) {
+          go('dashboard'); // → straight to dashboard ✅
+        } else {
+          // Signed in but no profile yet — guide them to setup
+          toast("Looks like you're new here — let's build your profile!",'ok');
+          go('setup');
+        }
+      }
+    } catch(e) {
+      toast(e.code==='auth/popup-closed-by-user'?'Sign-in cancelled.':(e.message||'Sign-in failed.'),'err');
+      btn.disabled=false;
+      btn.innerHTML=`${googleSvg} ${isSignup?'Sign up with Google':'Sign in with Google'}`;
+    }
+  });
+}
+
+/* ── Onboarding / Edit ── */
+const STEPS=['Name','College','Details','Interests'];
+
+function stepBody() {
+  const {od,step,colResults,colLoading}=S;
+
+  if (step===0) return `
+    <div class="field">
+      <label class="lbl">Preferred name</label>
+      <input class="inp" id="pname" value="${esc(od.preferredName)}" placeholder="What should people call you?" autofocus>
+      <p class="small-note" style="margin-top:8px">Your Google display name has been pre-filled — feel free to change it.</p>
+    </div>`;
+
+  if (step===1) {
+    const sel=od.college;
+    return `
+      <div class="field">
+        <label class="lbl">College or university</label>
+        ${!sel ? `<input class="inp" id="colSearch" placeholder="Search — e.g. Harvard, MIT, Georgia Tech…" autocomplete="off">` : ''}
+        ${sel ? `
+          <div class="sel-college">
+            ${renderLogo(sel.name,sel.logo,50)}
+            <div style="flex:1;min-width:0">
+              <p style="font-weight:600">${esc(sel.name)}</p>
+              <p class="dim" style="font-size:14px">${esc([sel.city,sel.state].filter(Boolean).join(', '))}</p>
+              ${sel.website?`<p class="muted" style="font-size:13px">${esc(sel.website)}</p>`:''}
+            </div>
+            <button class="sbtn" style="padding:8px 12px;font-size:13px;flex-shrink:0" id="changeColl">Change</button>
+          </div>` : ''}
+        <div id="colResultsArea"></div>
+        <p class="small-note" style="margin-top:8px">${SCORECARD_KEY?'Live search via U.S. College Scorecard API.':'Using built-in college list. Add a free College Scorecard key (api.data.gov) at the top of the script for full nationwide search.'}</p>
+      </div>`;
+  }
+
+  if (step===2) return `
+    <div class="grid2">
+      <div class="field"><label class="lbl">Major</label><input class="inp" id="major" value="${esc(od.major)}" placeholder="e.g. Computer Science"></div>
+      <div class="field"><label class="lbl">Graduation year</label><input class="inp" id="gradyr" value="${esc(od.gradYear)}" placeholder="e.g. 2027"></div>
+    </div>`;
+
+  return `
+    <div class="field">
+      <label class="lbl">Your interests <span class="muted">(pick as many as you like)</span></label>
+      <div class="interests">${INTERESTS.map(i=>`<button class="int-btn${od.interests.includes(i)?' on':''}" data-int="${esc(i)}">${esc(i)}</button>`).join('')}</div>
+    </div>`;
+}
+
+function renderSetup(isEdit=false) {
+  const step=S.step;
+  app.innerHTML=`
+    ${(S.profile&&isEdit)?navbar():''}
+    <section class="setup-wrap">
+      <div class="wrap">
+        <div class="setup-card glass rise">
+          <span class="eyebrow glass" style="display:inline-flex;margin-bottom:16px">Step ${step+1} of ${STEPS.length} · ${STEPS[step]}</span>
+          <h1 class="display" style="font-size:clamp(30px,5vw,46px);letter-spacing:-.05em;margin-bottom:8px">
+            <span class="gtext">${isEdit?'Edit your profile':'Build your profile'}</span>
+          </h1>
+          <p class="dim" style="line-height:1.7;font-size:15px">CampusLink uses this to match you with your college community and generate a tailored summary.</p>
+          <div class="steps-bar">${STEPS.map((_,i)=>`<div class="step-pill${i<=step?' on':''}"></div>`).join('')}</div>
+          ${stepBody()}
+          <div class="setup-actions">
+            <button class="sbtn" id="backBtn">${step===0?(isEdit?'Cancel':'← Back'):'← Back'}</button>
+            <button class="pbtn sm" id="nextBtn">${step===STEPS.length-1?(isEdit?'Save Profile →':'Finish Setup →'):'Next →'}</button>
+          </div>
+        </div>
+      </div>
+    </section>`;
+
+  if (S.profile&&isEdit) attachNav();
+  wireSetup(isEdit);
+}
+
+function syncStep() {
+  if (S.step===0) S.od.preferredName=$('pname')?.value.trim()||'';
+  if (S.step===2) { S.od.major=$('major')?.value.trim()||''; S.od.gradYear=$('gradyr')?.value.trim()||''; }
+}
+
+function validateStep() {
+  const {od,step}=S;
+  if (step===0&&!od.preferredName)    return 'Enter your preferred name.';
+  if (step===1&&!od.college)          return 'Select a college to continue.';
+  if (step===2&&!od.major)            return 'Enter your major.';
+  if (step===2&&!od.gradYear)         return 'Enter your graduation year.';
+  if (step===3&&!od.interests.length) return 'Select at least one interest.';
+  return '';
+}
+
+/* ── Update only the college results area without re-rendering the whole page ── */
+function updateColResults(isEdit) {
+  const area = document.getElementById('colResultsArea');
+  if (!area) return;
+  if (S.colLoading) {
+    area.innerHTML = `<p class="muted" style="font-size:13px;padding:8px 0">Searching…</p>`;
+    return;
+  }
+  if (!S.colResults.length) { area.innerHTML = ''; return; }
+  area.innerHTML = `
+    <div class="col-results glass">
+      ${S.colResults.map(c=>`
+        <button class="col-row" data-cid="${esc(c.id)}">
+          ${renderLogo(c.name,c.logo,46)}
+          <div style="min-width:0">
+            <p style="font-weight:600">${esc(c.name)}</p>
+            <p class="muted" style="font-size:12px">${esc([c.city,c.state].filter(Boolean).join(', '))}${c.ownership?` · ${esc(c.ownership)}`:''}${c.studentSize?` · ${Number(c.studentSize).toLocaleString()} students`:''}</p>
+          </div>
+        </button>`).join('')}
+    </div>`;
+  attachColClicks(isEdit);
+}
+
+function attachColClicks(isEdit) {
+  document.querySelectorAll('[data-cid]').forEach(b => {
+    b.addEventListener('click', () => {
+      const c = S.colResults.find(x => x.id === b.dataset.cid);
+      if (c) {
+        S.od.college = c;
+        S.colResults = [];
+        renderSetup(isEdit); // full re-render only when college is selected
+      }
+    });
+  });
+}
+
+function wireSetup(isEdit) {
+  $('backBtn').addEventListener('click',()=>{
+    if (S.step>0){S.step--;renderSetup(isEdit);}
+    else isEdit?go('dashboard'):go('login');
+  });
+
+  $('nextBtn').addEventListener('click',async()=>{
+    syncStep();
+    const err=validateStep();
+    if (err){toast(err,'err');return;}
+    if (S.step<STEPS.length-1){S.step++;renderSetup(isEdit);return;}
+    const btn=$('nextBtn');
+    btn.disabled=true; btn.textContent='Saving…';
+    try { isEdit?await doEdit():await doOnboarding(); }
+    catch(e){
+      toast(e.message||'Could not save.','err');
+      btn.disabled=false; btn.textContent=isEdit?'Save Profile →':'Finish Setup →';
+    }
+  });
+
+  const ci=$('colSearch');
+  if (ci) {
+    ci.addEventListener('input', () => {
+      clearTimeout(S.colTimer);
+      const val = ci.value;
+      if (val.trim().length < 2) {
+        S.colResults = [];
+        updateColResults(isEdit);
+        return;
+      }
+      S.colTimer = setTimeout(async () => {
+        S.colLoading = true;
+        updateColResults(isEdit);
+        try { S.colResults = await searchColleges(val.trim()); } catch { S.colResults = []; }
+        S.colLoading = false;
+        updateColResults(isEdit);
+      }, 380);
+    });
+    attachColClicks(isEdit);
+  }
+
+  $('changeColl')?.addEventListener('click',()=>{S.od.college=null;renderSetup(isEdit);});
+
+  document.querySelectorAll('[data-int]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const set=new Set(S.od.interests),i=b.dataset.int;
+      set.has(i)?set.delete(i):set.add(i);
+      S.od.interests=Array.from(set);
+      renderSetup(isEdit);
+    });
+  });
+}
+
+async function doOnboarding() {
+  const {od,user}=S, c=od.college, now=Date.now();
+  const profile={
+    uid:user.uid, email:user.email||'', preferredName:od.preferredName,
+    photoURL:user.photoURL||'',
+    collegeId:c.id, collegeName:c.name, collegeCity:c.city,
+    collegeState:c.state, collegeWebsite:c.website, collegeLogo:c.logo||'',
+    collegeOwnership:c.ownership||'', major:od.major, gradYear:od.gradYear,
+    interests:od.interests,
+    aiSummary:studentSummary({preferredName:od.preferredName,major:od.major,gradYear:od.gradYear,interests:od.interests,collegeName:c.name}),
+    collegeSummary:collegeSummary(c),
+    onboardingComplete:true, createdAt:now, updatedAt:now,
+  };
+  await saveProfile(user.uid,profile);
+  S.profile=profile;
+  toast('Profile created! Welcome 🎓','ok');
+  go('dashboard');
+}
+
+async function doEdit() {
+  const {od,profile,user}=S;
+  const c=od.college?.id?od.college:{
+    id:profile.collegeId,name:profile.collegeName,city:profile.collegeCity,
+    state:profile.collegeState,website:profile.collegeWebsite,
+    logo:profile.collegeLogo,ownership:profile.collegeOwnership,studentSize:null,
+  };
+  const updates={
+    preferredName:od.preferredName, collegeId:c.id, collegeName:c.name,
+    collegeCity:c.city, collegeState:c.state, collegeWebsite:c.website,
+    collegeLogo:c.logo||'', collegeOwnership:c.ownership||'',
+    major:od.major, gradYear:od.gradYear, interests:od.interests,
+    aiSummary:studentSummary({preferredName:od.preferredName,major:od.major,gradYear:od.gradYear,interests:od.interests,collegeName:c.name}),
+    collegeSummary:collegeSummary(c),
+    updatedAt:Date.now(),
+  };
+  await saveProfile(user.uid,updates);
+  S.profile={...profile,...updates};
+  toast('Profile updated!','ok');
+  go('dashboard');
+}
+
+function prepEdit() {
+  const p=S.profile; S.step=0;
+  S.od={
+    preferredName:p.preferredName||'',
+    college:p.collegeId?{id:p.collegeId,name:p.collegeName,city:p.collegeCity,state:p.collegeState,website:p.collegeWebsite,logo:p.collegeLogo,ownership:p.collegeOwnership,studentSize:null}:null,
+    major:p.major||'', gradYear:p.gradYear||'', interests:p.interests||[],
+  };
+  renderSetup(true);
+}
+
+/* ── Dashboard ── */
+function renderDashboard() {
+  const p=S.profile, avatar=p.photoURL||S.user?.photoURL||'', name=p.preferredName||'Student';
+  app.innerHTML=`
+    ${navbar()}
+    <section class="dash">
+      <div class="wrap">
+
+        <div class="dash-hero glass rise">
+          <div class="profile-head">
+            ${avEl(avatar,name,90)}
+            <div>
+              <h1 class="profile-name display gtext">${esc(name)}</h1>
+              <p class="dim" style="margin-top:6px;font-size:15px">${esc(p.major)} · ${esc(p.collegeName)} · Class of ${esc(p.gradYear)}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-grid">
+          <div class="panel glass">
+            <h2>AI Student Summary</h2>
+            <p class="summary">${esc(p.aiSummary||studentSummary(p))}</p>
+            <div class="badge-row">${(p.interests||[]).map(i=>`<span class="badge">${esc(i)}</span>`).join('')}</div>
+          </div>
+          <div class="panel glass">
+            <h2>College</h2>
+            <div class="sel-college" style="margin:0 0 14px">
+              ${renderLogo(p.collegeName,p.collegeLogo,52)}
+              <div style="min-width:0">
+                <p style="font-weight:600">${esc(p.collegeName)}</p>
+                <p class="dim" style="font-size:14px">${esc([p.collegeCity,p.collegeState].filter(Boolean).join(', '))}</p>
+                ${p.collegeWebsite?`<p class="muted" style="font-size:13px">${esc(p.collegeWebsite)}</p>`:''}
+              </div>
+            </div>
+            <div class="meta-list">
+              <div class="meta-row"><span>Major</span><span>${esc(p.major)}</span></div>
+              <div class="meta-row"><span>Graduation</span><span>Class of ${esc(p.gradYear)}</span></div>
+              <div class="meta-row"><span>School type</span><span>${esc(p.collegeOwnership||'—')}</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-grid">
+          <div class="panel glass">
+            <h2>AI College Summary</h2>
+            <p class="summary">${esc(p.collegeSummary||'')}</p>
+          </div>
+          <div class="panel glass">
+            <h2>Quick Actions</h2>
+            <div style="display:grid;gap:12px">
+              <button class="pbtn" data-r="community">Find Collegemates →</button>
+              <button class="sbtn" data-r="edit">Edit Profile</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>`;
+  attachNav();
+}
+
+/* ── Community ── */
+async function renderCommunity() {
+  app.innerHTML=navbar()+loaderHtml(); attachNav();
+  try { S.community=await getCommunity(S.profile.collegeId); }
+  catch(e){ toast('Could not load community.','err'); S.community=[]; }
+  drawCommunity();
+}
+
+function drawCommunity() {
+  const q=S.commFilter.toLowerCase();
+  const list=S.community.filter(u=>{
+    if(!q)return true;
+    return [u.preferredName,u.major,...(u.interests||[])].join(' ').toLowerCase().includes(q);
+  });
+  app.innerHTML=`
+    ${navbar()}
+    <section class="dash">
+      <div class="wrap">
+        <div class="toolbar">
+          <div>
+            <h1 class="display" style="font-size:clamp(26px,5vw,42px);letter-spacing:-.04em">
+              <span class="gtext">${esc(S.profile.collegeName)}</span> Community
+            </h1>
+            <p class="dim" style="margin-top:4px;font-size:15px">Students from your college on CampusLink.</p>
+          </div>
+          <input class="inp" id="commFilter" value="${esc(S.commFilter)}" placeholder="Filter by name, major or interest…">
+        </div>
+        ${list.length
+          ?`<div class="cards-grid">${list.map(studentCard).join('')}</div>`
+          :`<div class="empty glass">
+              <p style="font-size:46px;margin-bottom:12px">🎓</p>
+              <h2>No collegemates yet</h2>
+              <p>${esc(S.profile.collegeName)} students who join CampusLink will appear here.</p>
+            </div>`}
+      </div>
+    </section>`;
+  attachNav();
+  $('commFilter').addEventListener('input',e=>{S.commFilter=e.target.value;drawCommunity();});
+}
+
+function studentCard(u) {
+  const name=u.preferredName||'Student';
+  return `
+    <article class="s-card glass">
+      <div class="s-top">
+        ${avEl(u.photoURL,name,54)}
+        <div style="min-width:0">
+          <p style="font-weight:600;font-size:15px">${esc(name)}</p>
+          <p class="dim" style="font-size:13px">${esc(u.major)} · ${esc(u.gradYear)}</p>
+        </div>
+      </div>
+      <p class="summary" style="font-size:13px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">${esc(u.aiSummary||studentSummary(u))}</p>
+      <div class="badge-row">${(u.interests||[]).slice(0,5).map(i=>`<span class="badge">${esc(i)}</span>`).join('')}</div>
+    </article>`;
+}
+
+/* ── Auth listener — ONLY handles page refresh / tab restore ── */
+onAuthStateChanged(auth, async user => {
+  // If route is already set, button click already handled routing — skip
+  if (S.route !== 'loading') return;
+
+  S.user = user;
+
+  // No session — show login
+  if (!user) { go('login'); return; }
+
+  // Session exists — try to restore
+  S.od.preferredName = user.displayName || '';
+  try {
+    const p = await getProfile(user.uid);
+    S.profile = p;
+    if (p?.onboardingComplete) {
+      // Fully set up — go straight to dashboard
+      go('dashboard');
+    } else {
+      // Has a session but no completed profile yet
+      // Show login so they can intentionally sign in rather than auto-dumping into setup
+      go('login');
+    }
+  } catch(e) {
+    console.warn('Session restore error:', e.code, e.message);
+    S.profile = null;
+    go('login');
+  }
+});
+</script>
+</body>
+</html>
